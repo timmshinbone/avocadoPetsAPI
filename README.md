@@ -40,115 +40,51 @@ Add your own scripts to test your custom API.
 | PATCH  | `/change-password/` | `users#changepw`  |
 | DELETE | `/sign-out/`        | `users#signout`   |
 
-#### POST /sign-up
+### Pets
 
-Request:
+| Verb   | URI Pattern            | Controller#Action |
+|--------|------------------------|-------------------|
+| GET   | `/pets`             | `pets#index`    |
+| GET   | `/pets/<pet_id>`    | `pets#show`    |
+| POST   | `/pets`             | `pets#create`    |
+| PATCH  | `/pets/<pet_id>` | `pets#update`  |
+| DELETE | `/pets/<pet_id>`        | `pets#delete`   |
 
-```sh
-curl --include --request POST http://localhost:8000/sign-up \
-  --header "Content-Type: application/json" \
-  --data '{
+### Toys
+
+| Verb   | URI Pattern            | Controller#Action |
+|--------|------------------------|-------------------|
+| POST   | `/pets/<pet_id>`             | `toys#create`    |
+| PATCH  | `/pets/<pet_id>/<toy_id>` | `toys#update`  |
+| DELETE | `/pets/<pet_id>/<toy_id>`        | `toys#delete`   |
+
+#### Recommended Request bodies
+
+Request - users#signup:
+
+```json
+{
     "credentials": {
       "email": "an@example.email",
       "password": "an example password",
       "password_confirmation": "an example password"
     }
-  }'
-```
-
-```sh
-curl-scripts/sign-up.sh
-```
-
-Response:
-
-```md
-HTTP/1.1 201 Created
-Content-Type: application/json; charset=utf-8
-
-{
-  "user": {
-    "id": 1,
-    "email": "an@example.email"
-  }
 }
 ```
 
-#### POST /sign-in
+Request - pets#create (requires a token):
 
-Request:
-
-```sh
-curl --include --request POST http://localhost:8000/sign-in \
-  --header "Content-Type: application/json" \
-  --data '{
-    "credentials": {
-      "email": "an@example.email",
-      "password": "an example password"
-    }
-  }'
-```
-
-```sh
-curl-scripts/sign-in.sh
-```
-
-Response:
-
-```md
-HTTP/1.1 200 OK
-Content-Type: application/json; charset=utf-8
-
+```json
 {
-  "user": {
-    "id": 1,
-    "email": "an@example.email",
-    "token": "33ad6372f795694b333ec5f329ebeaaa"
-  }
+    "pet": {
+        "name": "Larry David",
+        "type": "guinea pig",
+        "age": 7,
+        "adoptable": false
+    }
 }
 ```
 
-#### PATCH /change-password/
+### Token Auth Strategy
 
-Request:
-
-```sh
-curl --include --request PATCH http://localhost:8000/change-password/ \
-  --header "Authorization: Bearer $TOKEN" \
-  --header "Content-Type: application/json" \
-  --data '{
-    "passwords": {
-      "old": "an example password",
-      "new": "super sekrit"
-    }
-  }'
-```
-
-```sh
-TOKEN=33ad6372f795694b333ec5f329ebeaaa curl-scripts/change-password.sh
-```
-
-Response:
-
-```md
-HTTP/1.1 204 No Content
-```
-
-#### DELETE /sign-out/
-
-Request:
-
-```sh
-curl --include --request DELETE http://localhost:8000/sign-out/ \
-  --header "Authorization: Bearer $TOKEN"
-```
-
-```sh
-TOKEN=33ad6372f795694b333ec5f329ebeaaa curl-scripts/sign-out.sh
-```
-
-Response:
-
-```md
-HTTP/1.1 204 No Content
-```
+Send the token as `Bearer Token <token>`
