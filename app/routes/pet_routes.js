@@ -30,6 +30,7 @@ const router = express.Router()
 // GET /pets
 router.get('/pets', (req, res, next) => {
 	Pet.find()
+		.populate('owner')
 		.then((pets) => {
 			return pets.map((pet) => pet.toObject())
 		})
@@ -57,6 +58,7 @@ router.get('/pets/mine', requireToken, (req, res, next) => {
 router.get('/pets/:id', (req, res, next) => {
 	// req.params.id will be set based on the `:id` in the route
 	Pet.findById(req.params.id)
+		.populate('owner')
 		.then(handle404)
 		.then((pet) => res.status(200).json({ pet: pet.toObject() }))
 		// if an error occurs, pass it to the handler
